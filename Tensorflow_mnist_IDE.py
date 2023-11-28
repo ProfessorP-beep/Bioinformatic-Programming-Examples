@@ -1,11 +1,13 @@
 #import tensorflow into program
 import tensorflow as tf
+import numpy as np
 #Check tensorflow version
 print("TensorFlow version:", tf.__version__)
 
 #load mnist practice dataset
 mnist = tf.keras.datasets.mnist
-View(mnist) #if you want to view the defined variable / dataset
+
+# View(mnist) #if you want to view the defined variable / dataset
 (x_train, y_train), (x_test, y_test) = mnist.load_data() #load in the data array
 x_train, x_test = x_train / 255.0, x_test / 255.0
 
@@ -18,7 +20,7 @@ model = tf.keras.models.Sequential([
   tf.keras.layers.Dropout(0.2),
   tf.keras.layers.Dense(10)
 ])
-View(model)
+# View(model)
 
 #For each example, the model returns a vector of logits (vector of raw non normalized predictions) or log-odds (logarithm of odds of some event) scores for each class
 predictions = model(x_train[:1]).numpy()
@@ -40,5 +42,20 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 
 #### Train and evaluate model ####
+x_train= np.asarray(x_train)
+y_train = np.asarray(y_train)
 #Model.fit adjusts model parameters and minimize loss
 model.fit(x_train, y_train, epochs=5)
+
+#Model.evaluate checks the model's performance, usually on a validation or test set
+model.evaluate(x_test,  y_test, verbose=2)
+
+#If you want your model to return a probability, you can wrap the trained model, and attach the softmax to it:
+probability_model = tf.keras.Sequential([
+  model,
+  tf.keras.layers.Softmax()
+])
+
+probability_model(x_test[:5])
+
+tf.keras.models.save_model(model, 'cnn-mnist') #Save the model as cnn-mist
