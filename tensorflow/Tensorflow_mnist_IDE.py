@@ -58,4 +58,4 @@ probability_model = tf.keras.Sequential([
 
 probability_model(x_test[:5])
 
-tf.keras.models.save_model(model, 'cnn-mnist') #Save the model as cnn-mist
+tf.keras.models.save_model(model, 'tensorflow/cnn-mnist') #Save the model as cnn-mist

@@ -5,7 +5,7 @@ library(tensorflow)
 library(shiny)
 
 #load model
-model_load <- load_model_tf('cnn-mnist/')
+model_load <- load_model_tf('tensorflow/cnn-mnist/')
 
 # Define the UI
 ui <- fluidPage(
