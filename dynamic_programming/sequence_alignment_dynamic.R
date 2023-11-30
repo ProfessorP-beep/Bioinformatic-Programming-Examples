@@ -27,11 +27,18 @@ simple_alignment <- function(seq_1, seq_2, match_reward, mismatch_penalty, gap_p
   score_matrix[, 1] <- seq(0, by = gap_penalty, length.out = seq2_length + 1) #row wise
   
   #Begin to fill in the rows and columns with gap penalties
-  for (x in seq(seq1_length)){  
-    for (y in seq(seq2_length)){  
-      match <- score_matrix[x-1, y-1] + ifelse(str_sub(seq_1, start = y-1, end = y-1) == str_sub(seq_2, start = x-1, end = x-1), match_reward, mismatch_penalty)
-      deletion <- score_matrix[x-1, y] + gap_penalty
-      insertion <- score_matrix[x, y-1] + gap_penalty
+  for (x in seq_len(seq1_length)){  
+    for (y in seq_len(seq2_length)){  
+      match <- if(x > 1 && y > 1){
+        score_matrix[x -1, y - 1] + ifelse(str_sub(seq_1, start = y-1, end = y-1 ) == str_sub(seq_2, start = x-1, end = x-1),
+                                           match_reward, mismatch_penalty) } else {
+          ifelse(str_sub(seq_1, start = y-1, end = y-1 ) == str_sub(seq_2, start = x-1, end = x-1),
+                 match_reward, mismatch_penalty)
+          }
+      
+      deletion <- if (x > 1) score_matrix[x-1, y] + gap_penalty else score_matrix[1, y] + gap_penalty
+      
+      insertion <- if (y > 1) score_matrix[x, y-1] + gap_penalty else score_matrix[x, 1] + gap_penalty
      
       score_matrix[x, y] <- max(match, deletion, insertion, na.rm = T)
   }
