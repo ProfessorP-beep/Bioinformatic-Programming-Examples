@@ -20,21 +20,20 @@ simple_alignment <- function(seq_1, seq_2, match_reward, mismatch_penalty, gap_p
   seq2_length <- nchar(seq_2)
   
   #Create the score matrix for alignment
-  score_matrix <- matrix(0, ncol = seq1_length, nrow = seq2_length) 
+  score_matrix <- matrix(0, ncol = seq1_length + 1, nrow = seq2_length + 1) 
   
   #add gap penalties to first row and column to account for gaps at the beginning of either sequence and to initialize matrix.
-  score_matrix[1, ] <- seq(0, by = gap_penalty, length.out = seq1_length) #column wise
-  score_matrix[, 1] <- seq(0, by = gap_penalty, length.out = seq2_length) #row wise
+  score_matrix[1, ] <- seq(0, by = gap_penalty, length.out = seq1_length + 1) #column wise
+  score_matrix[, 1] <- seq(0, by = gap_penalty, length.out = seq2_length + 1) #row wise
   
   #Begin to fill in the rows and columns with gap penalties
-  for (x in seq1_length) {  
-    for (y in seq2_length) {  
-      match <- score_matrix[x, y] + ifelse(str_sub(seq_1, start = y, end = y) == str_sub(seq_2, start = x, end = x), match_reward, mismatch_penalty)
-      deletion <- score_matrix[x, y] + gap_penalty
-      insertion <- score_matrix[x, y]
-      
-      
-      score_matrix[x, y] <- max(match, deletion, insertion)
+  for (x in seq(seq1_length)){  
+    for (y in seq(seq2_length)){  
+      match <- score_matrix[x-1, y-1] + ifelse(str_sub(seq_1, start = y-1, end = y-1) == str_sub(seq_2, start = x-1, end = x-1), match_reward, mismatch_penalty)
+      deletion <- score_matrix[x-1, y] + gap_penalty
+      insertion <- score_matrix[x, y-1] + gap_penalty
+     
+      score_matrix[x, y] <- max(match, deletion, insertion, na.rm = T)
   }
 }
   
