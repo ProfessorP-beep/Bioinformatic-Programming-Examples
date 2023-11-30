@@ -48,7 +48,7 @@ simple_alignment <- function(seq_1, seq_2, match_reward, mismatch_penalty, gap_p
     #Create a loop that continues until i or j = 1
     while(i > 1 || j > 1){
       #if i > 1 and j > 1 AND there is a match, so can copy the match script from filling the rows above
-      if(i > 1 && j > 1 && score_matrix[i-1, j-1] + ifelse(str_sub(seq_1, start = i-1, end = i-1) == str_sub(seq_2, start = j-1, end = j-1), match_reward, mismatch_penalty)){
+      if(i > 1 && j > 1 && score_matrix[i,j] == score_matrix[i-1, j-1] + ifelse(str_sub(seq_1, start = i-1, end = i-1) == str_sub(seq_2, start = j-1, end = j-1), match_reward, mismatch_penalty)){
       seq1_align <- c(seq1_align, str_sub(seq1_align, start =  i,end = i))
       seq2_align <- c(seq2_align, str_sub (seq2_align ,j-1, j-1))
       i <- i - 1 #update of indices i and j to move to the previous position in the matrix to refer to original sequence positions.
